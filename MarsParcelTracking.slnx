@@ -1,4 +1,17 @@
 <Solution>
-  <Project Path="MarsParcelTracking.Tests/MarsParcelTracking.Tests.csproj" />
-  <Project Path="MarsParcelTracking/MarsParcelTracking.csproj" />
+  <Project Path="MarsParcelTracking.Application/MarsParcelTracking.Application.csproj">
+    <BuildDependency Project="MarsParcelTracking.Domain/MarsParcelTracking.Domain.csproj" />
+  </Project>
+  <Project Path="MarsParcelTracking.Domain/MarsParcelTracking.Domain.csproj" />
+  <Project Path="MarsParcelTracking.Infrastructure/MarsParcelTracking.Infrastructure.csproj">
+    <BuildDependency Project="MarsParcelTracking.Application/MarsParcelTracking.Application.csproj" />
+    <BuildDependency Project="MarsParcelTracking.Domain/MarsParcelTracking.Domain.csproj" />
+  </Project>
+  <Project Path="MarsParcelTracking.Tests/MarsParcelTracking.Tests.csproj">
+    <BuildDependency Project="MarsParcelTracking/MarsParcelTracking.API.csproj" />
+  </Project>
+  <Project Path="MarsParcelTracking/MarsParcelTracking.API.csproj">
+    <BuildDependency Project="MarsParcelTracking.Application/MarsParcelTracking.Application.csproj" />
+    <BuildDependency Project="MarsParcelTracking.Infrastructure/MarsParcelTracking.Infrastructure.csproj" />
+  </Project>
 </Solution>
