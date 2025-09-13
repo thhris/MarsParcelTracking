@@ -17,6 +17,9 @@ public class ParcelService : IParcelService
 
     public Parcel? GetParcel(string barcode)
     {
+        if (!BarcodeValidator.IsValid(barcode))
+            throw new ArgumentException("Invalid barcode format.");
+
         Parcel? parcel = _repository.Get(barcode);
 
         return parcel;
@@ -25,6 +28,8 @@ public class ParcelService : IParcelService
     public Parcel CreateParcel(Parcel parcel)
     {
         // Validate Parcel barcode
+        if (!BarcodeValidator.IsValid(parcel.Barcode))
+            throw new ArgumentException("Invalid barcode format.");
 
         // Set hardcoded values
         parcel.Status = ParcelStatus.Created;
@@ -45,6 +50,8 @@ public class ParcelService : IParcelService
     public Parcel UpdateParcelStatus(string barcode, ParcelStatus newStatus)
     {
         // Validate Parcel barcode
+        if (!BarcodeValidator.IsValid(barcode))
+            throw new ArgumentException("Invalid barcode format.");
 
         var parcel = _repository.Get(barcode);
         if (parcel == null)

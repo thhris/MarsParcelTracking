@@ -48,13 +48,20 @@ namespace MarsParcelTracking.Controllers
         [HttpGet("{barcode}")]
         public IActionResult GetParcel(string barcode)
         {
-            var parcel = _parcelService.GetParcel(barcode);
-            if (parcel == null)
+            try
             {
-                return NotFound();
-            }
+                var parcel = _parcelService.GetParcel(barcode);
+                if (parcel == null)
+                {
+                    return NotFound();
+                }
 
-            return Ok(parcel);
+                return Ok(parcel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
