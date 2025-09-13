@@ -1,12 +1,16 @@
 using MarsParcelTracking.Application.Interfaces;
 using MarsParcelTracking.Application.Services;
 using MarsParcelTracking.Infrastructure.Repos;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Retain name for enums in JSON instead of numbers
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
-builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();

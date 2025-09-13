@@ -18,6 +18,6 @@ public class ParcelRepository : IParcelRepository
 
     public void Update(Parcel parcel)
     {
-        throw new NotImplementedException();
+        _storage[parcel.Barcode] = parcel;
     }
 }

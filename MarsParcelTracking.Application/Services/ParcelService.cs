@@ -1,5 +1,7 @@
-﻿using MarsParcelTracking.Application.Interfaces;
+﻿using MarsParcelTracking.Application.Helpers;
+using MarsParcelTracking.Application.Interfaces;
 using MarsParcelTracking.Domain.Entities;
+using MarsParcelTracking.Domain.Enums;
 using MarsParcelTracking.Infrastructure.Repos;
 
 namespace MarsParcelTracking.Application.Services;
@@ -7,7 +9,7 @@ namespace MarsParcelTracking.Application.Services;
 public class ParcelService : IParcelService
 {
     private readonly IParcelRepository _repository;
-    private static readonly DateTime FirstStandardLaunch = new DateTime(2025, 10, 1);
+    private static readonly DateOnly FirstStandardLaunch = new DateOnly(2025, 10, 1);
     public ParcelService(IParcelRepository repository)
     {
         _repository = repository;
@@ -25,7 +27,7 @@ public class ParcelService : IParcelService
         // Validate Parcel barcode
 
         // Set hardcoded values
-        parcel.Status = "Created";
+        parcel.Status = ParcelStatus.Created;
         parcel.Origin = "Starport Thames Estuary";
         parcel.Destination = "New London";
 
@@ -39,18 +41,29 @@ public class ParcelService : IParcelService
         return parcel;
     }
 
-    public Parcel UpdateParcelStatus(string barcode, string newStatus)
+    public Parcel UpdateParcelStatus(string barcode, ParcelStatus newStatus)
     {
         // Validate Parcel barcode
 
-        // Check if new status is possible from current status
+        var parcel = _repository.Get(barcode);
+        if (parcel == null)
+        {
+            throw new KeyNotFoundException("Parcel not found.");
+        }
 
-        // Update Parcel status
+        if (!StatusTransitionValidator.IsValidTransition(parcel.Status, newStatus))
+        {
+            throw new ArgumentException("Invalid transition");
+        }
 
-        throw new NotImplementedException();
+        parcel.Status = newStatus;
+        parcel.History.Add(new History { Status = newStatus, Timestamp = DateTime.Now });
+        _repository.Update(parcel);
+
+        return parcel;
     }
 
-    public static DateTime GetLaunchDate(string service, DateTime now)
+    public static DateOnly GetLaunchDate(string service, DateTime now)
     {
         return service switch
         {
@@ -70,23 +83,24 @@ public class ParcelService : IParcelService
         };
     }
 
-    private static DateTime GetEstimatedArrivalTime(DateTime launchDate, int etaDays)
+    private static DateOnly GetEstimatedArrivalTime(DateOnly launchDate, int etaDays)
     {
         return launchDate.AddDays(etaDays);
     }
 
-    private static DateTime GetNextStandardLaunchDate()
+    private static DateOnly GetNextStandardLaunchDate()
     {
         var nextLaunchDate = FirstStandardLaunch;
-        while (nextLaunchDate < DateTime.UtcNow)
+        var today = DateOnly.FromDateTime(DateTime.UtcNow.Date);
+        while (nextLaunchDate < today)
             nextLaunchDate = nextLaunchDate.AddMonths(26);
 
         return nextLaunchDate;
     }
 
-    private static DateTime GetNextExpressLaunchDate(DateTime now)
+    private static DateOnly GetNextExpressLaunchDate(DateTime now)
     {
-        var firstWednesday = new DateTime(now.Year, now.Month, 1);
+        var firstWednesday = new DateOnly(now.Year, now.Month, 1);
         while (firstWednesday.DayOfWeek != DayOfWeek.Wednesday)
             firstWednesday = firstWednesday.AddDays(1);
 

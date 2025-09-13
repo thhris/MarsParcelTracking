@@ -1,5 +1,6 @@
 using MarsParcelTracking.Application.Interfaces;
 using MarsParcelTracking.Domain.Entities;
+using MarsParcelTracking.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarsParcelTracking.Controllers
@@ -31,7 +32,7 @@ namespace MarsParcelTracking.Controllers
         }
 
         [HttpPatch("{barcode}")]
-        public IActionResult UpdateStatus(string barcode, [FromBody] string newStatus)
+        public IActionResult UpdateStatus(string barcode, [FromBody] ParcelStatus newStatus)
         {
             try
             {

@@ -1,12 +1,14 @@
-﻿namespace MarsParcelTracking.Domain.Entities;
+﻿using MarsParcelTracking.Domain.Enums;
+
+namespace MarsParcelTracking.Domain.Entities;
 
 public class Parcel
 {
     public required string Barcode { get; set; }
-    public string? Status { get; set; }
-    public DateTime LaunchDate { get; set; }
+    public ParcelStatus Status { get; set; }
+    public DateOnly LaunchDate { get; set; }
     public int EtaDays { get; set; }
-    public DateTime EstimatedArrivalDate { get; set; }
+    public DateOnly EstimatedArrivalDate { get; set; }
     public string? Origin { get; set; }
     public string? Destination { get; set; }
     public required string Sender { get; set; }
