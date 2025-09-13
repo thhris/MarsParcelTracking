@@ -13,11 +13,11 @@ public class ParcelService : IParcelService
         _repository = repository;
     }
 
-    public Parcel GetParcel(string barcode)
+    public Parcel? GetParcel(string barcode)
     {
-        // Retrieve and return Parcel by barcode
+        Parcel? parcel = _repository.Get(barcode);
 
-        throw new NotImplementedException();
+        return parcel;
     }
 
     public Parcel CreateParcel(Parcel parcel)

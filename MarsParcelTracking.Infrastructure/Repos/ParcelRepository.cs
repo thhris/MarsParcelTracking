@@ -6,9 +6,9 @@ public class ParcelRepository : IParcelRepository
 {
     private readonly Dictionary<string, Parcel> _storage = [];
 
-    public Parcel Get(string barcode)
+    public Parcel? Get(string barcode)
     {
-        throw new NotImplementedException();
+        return _storage.TryGetValue(barcode, out var parcel) ? parcel : null;
     }
 
     public void Add(Parcel parcel)
