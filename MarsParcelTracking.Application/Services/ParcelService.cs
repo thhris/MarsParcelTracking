@@ -34,6 +34,7 @@ public class ParcelService : IParcelService
         parcel.LaunchDate = GetLaunchDate(parcel.DeliveryService, DateTime.UtcNow);
         parcel.EtaDays = GetEtaDays(parcel.DeliveryService);
         parcel.EstimatedArrivalDate = GetEstimatedArrivalTime(parcel.LaunchDate, parcel.EtaDays);
+        parcel.History.Add(new History { Status = parcel.Status, Timestamp = DateTime.Now });
 
         // Save new Parcel and return values
         _repository.Add(parcel);
