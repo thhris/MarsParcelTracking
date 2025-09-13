@@ -1,3 +1,7 @@
+using MarsParcelTracking.Application.Interfaces;
+using MarsParcelTracking.Application.Services;
+using MarsParcelTracking.Infrastructure.Repos;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +11,12 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+// Register Services and Repositories
+builder.Services.AddSingleton<IParcelRepository, ParcelRepository>();
+builder.Services.AddSingleton<IParcelService, ParcelService>();
+
 
 var app = builder.Build();
 

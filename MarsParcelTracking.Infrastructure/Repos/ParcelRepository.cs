@@ -4,7 +4,7 @@ namespace MarsParcelTracking.Infrastructure.Repos;
 
 public class ParcelRepository : IParcelRepository
 {
-    // Create the temp storage
+    private readonly Dictionary<string, Parcel> _storage = [];
 
     public Parcel Get(string barcode)
     {
@@ -13,7 +13,7 @@ public class ParcelRepository : IParcelRepository
 
     public void Add(Parcel parcel)
     {
-        throw new NotImplementedException();
+        _storage[parcel.Barcode] = parcel;
     }
 
     public void Update(Parcel parcel)
