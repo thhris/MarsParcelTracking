@@ -13,7 +13,7 @@ public class Parcel
     public string? Destination { get; set; }
     public required string Sender { get; set; }
     public required string Recipient { get; set; }
-    public required string DeliveryService { get; set; }
+    public DeliveryServiceType DeliveryService { get; set; }
     public required string Contents { get; set; }    
     public List<History> History { get; set; } = [];
 }

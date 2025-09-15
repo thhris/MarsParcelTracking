@@ -2,12 +2,17 @@
 
 public class BarcodeValidator
 {
+    private const string BarcodePrefix = "RMARS";
+    private const int ExpectedLength = 25;
+    private const int NumericSectionStart = 5;
+    private const int NumericSectionLength = 19;
+
     public static bool IsValid(string barcode)
     {
         if (string.IsNullOrEmpty(barcode)) return false;
-        if (!barcode.StartsWith("RMARS")) return false;
-        if (barcode.Length != 25) return false;
-        var numericBarcodePart = barcode.Substring(5, 19);
+        if (!barcode.StartsWith(BarcodePrefix)) return false;
+        if (barcode.Length != ExpectedLength) return false;
+        var numericBarcodePart = barcode.Substring(NumericSectionStart, NumericSectionLength);
         if (!IsStringNumeric(numericBarcodePart)) return false;
         if (!IsLastCharacterCapital(barcode)) return false;
 

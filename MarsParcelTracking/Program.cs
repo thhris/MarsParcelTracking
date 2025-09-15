@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen();
 
 // Register Services and Repositories
 builder.Services.AddSingleton<IParcelRepository, ParcelRepository>();
-builder.Services.AddSingleton<IParcelService, ParcelService>();
+builder.Services.AddTransient<IParcelService, ParcelService>();
 
 
 var app = builder.Build();

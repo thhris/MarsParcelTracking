@@ -9,7 +9,6 @@ namespace MarsParcelTracking.Application.Services;
 public class ParcelService : IParcelService
 {
     private readonly IParcelRepository _repository;
-    private static readonly DateOnly FirstStandardLaunch = new DateOnly(2025, 10, 1);
     public ParcelService(IParcelRepository repository)
     {
         _repository = repository;
@@ -36,10 +35,10 @@ public class ParcelService : IParcelService
         parcel.Origin = "Starport Thames Estuary";
         parcel.Destination = "New London";
 
-        parcel.LaunchDate = GetLaunchDate(parcel.DeliveryService, DateTime.UtcNow);
-        parcel.EtaDays = GetEtaDays(parcel.DeliveryService);
-        parcel.EstimatedArrivalDate = GetEstimatedArrivalTime(parcel.LaunchDate, parcel.EtaDays);
-        parcel.History.Add(new History { Status = parcel.Status, Timestamp = DateTime.Now });
+        parcel.LaunchDate = LaunchScheduleHelper.GetLaunchDate(parcel.DeliveryService, DateTime.UtcNow);
+        parcel.EtaDays = LaunchScheduleHelper.GetEtaDays(parcel.DeliveryService);
+        parcel.EstimatedArrivalDate = LaunchScheduleHelper.GetEstimatedArrivalTime(parcel.LaunchDate, parcel.EtaDays);
+        parcel.History.Add(new History { Status = parcel.Status, Timestamp = DateTime.UtcNow });
 
         // Save new Parcel and return values
         _repository.Add(parcel);
@@ -49,15 +48,10 @@ public class ParcelService : IParcelService
 
     public Parcel UpdateParcelStatus(string barcode, ParcelStatus newStatus)
     {
-        // Validate Parcel barcode
         if (!BarcodeValidator.IsValid(barcode))
             throw new ArgumentException("Invalid barcode format.");
 
-        var parcel = _repository.Get(barcode);
-        if (parcel == null)
-        {
-            throw new KeyNotFoundException("Parcel not found.");
-        }
+        var parcel = _repository.Get(barcode) ?? throw new KeyNotFoundException("Parcel not found.");
 
         if (!StatusTransitionValidator.IsValidTransition(parcel.Status, newStatus))
         {
@@ -65,54 +59,9 @@ public class ParcelService : IParcelService
         }
 
         parcel.Status = newStatus;
-        parcel.History.Add(new History { Status = newStatus, Timestamp = DateTime.Now });
+        parcel.History.Add(new History { Status = newStatus, Timestamp = DateTime.UtcNow });
         _repository.Update(parcel);
 
         return parcel;
     }
-
-    public static DateOnly GetLaunchDate(string service, DateTime now)
-    {
-        return service switch
-        {
-            "Standard" => GetNextStandardLaunchDate(),
-            "Express" => GetNextExpressLaunchDate(now),
-            _ => throw new ArgumentException("Invalid delivery service")
-        };
-    }
-
-    public static int GetEtaDays(string service)
-    {
-        return service switch
-        {
-            "Standard" => 180,
-            "Express" => 90,
-            _ => throw new ArgumentException("Invalid delivery service")
-        };
-    }
-
-    private static DateOnly GetEstimatedArrivalTime(DateOnly launchDate, int etaDays)
-    {
-        return launchDate.AddDays(etaDays);
-    }
-
-    private static DateOnly GetNextStandardLaunchDate()
-    {
-        var nextLaunchDate = FirstStandardLaunch;
-        var today = DateOnly.FromDateTime(DateTime.UtcNow.Date);
-        while (nextLaunchDate < today)
-            nextLaunchDate = nextLaunchDate.AddMonths(26);
-
-        return nextLaunchDate;
-    }
-
-    private static DateOnly GetNextExpressLaunchDate(DateTime now)
-    {
-        var firstWednesday = new DateOnly(now.Year, now.Month, 1);
-        while (firstWednesday.DayOfWeek != DayOfWeek.Wednesday)
-            firstWednesday = firstWednesday.AddDays(1);
-
-        return firstWednesday;
-    }
-
 }

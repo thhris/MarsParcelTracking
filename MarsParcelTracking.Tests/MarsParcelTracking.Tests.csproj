@@ -10,10 +10,17 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="FluentAssertions" Version="7.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="NUnit" Version="4.2.2" />
     <PackageReference Include="NUnit.Analyzers" Version="4.4.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MarsParcelTracking.Application\MarsParcelTracking.Application.csproj" />
+    <ProjectReference Include="..\MarsParcelTracking.Domain\MarsParcelTracking.Domain.csproj" />
+    <ProjectReference Include="..\MarsParcelTracking.Infrastructure\MarsParcelTracking.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
