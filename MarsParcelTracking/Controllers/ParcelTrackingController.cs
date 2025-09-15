@@ -25,9 +25,14 @@ namespace MarsParcelTracking.Controllers
                 var result = _parcelService.CreateParcel(request);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error creating parcel");
+                return StatusCode(500, "An unexpected error occurred.");
             }
         }
 
@@ -39,9 +44,18 @@ namespace MarsParcelTracking.Controllers
                 var result = _parcelService.UpdateParcelStatus(barcode, request.NewStatus);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException)
+            {
+                return NotFound("Parcel not found.");
+            }
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unexpected error updating parcel status for {barcode}");
+                return StatusCode(500, "An unexpected error occurred.");
             }
         }
 
@@ -58,9 +72,14 @@ namespace MarsParcelTracking.Controllers
 
                 return Ok(parcel);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unexpected error retrieving parcel {barcode}");
+                return StatusCode(500, "An unexpected error occurred.");
             }
         }
     }
