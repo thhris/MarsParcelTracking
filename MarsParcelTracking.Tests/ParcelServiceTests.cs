@@ -96,8 +96,8 @@ public class ParcelServiceTests
         var date = new DateTime(2025, 1, 15, 12, 0, 0, DateTimeKind.Utc);
         var launch = LaunchScheduleHelper.GetLaunchDate(DeliveryServiceType.Express, date);
         launch.Year.Should().Be(2025);
-        launch.Month.Should().Be(1);
-        launch.Day.Should().Be(1);
+        launch.Month.Should().Be(2);
+        launch.Day.Should().Be(5);
     }
 
     [Test]

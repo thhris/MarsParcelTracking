@@ -44,10 +44,23 @@ public static class LaunchScheduleHelper
 
     private static DateOnly GetNextExpressLaunchDate(DateTime now)
     {
-        var firstWednesday = new DateOnly(now.Year, now.Month, 1);
-        while (firstWednesday.DayOfWeek != DayOfWeek.Wednesday)
-            firstWednesday = firstWednesday.AddDays(1);
+        var today = DateOnly.FromDateTime(now.Date);
+        var firstWednesday = GetFirstWednesdayOfMonth(today.Year, today.Month);
+
+        if (firstWednesday < today)
+        {
+            var nextMonth = today.AddMonths(1);
+            return GetFirstWednesdayOfMonth(nextMonth.Year, nextMonth.Month);
+        }
 
         return firstWednesday;
+    }
+
+    static DateOnly GetFirstWednesdayOfMonth(int year, int month)
+    {
+        var date = new DateOnly(year, month, 1);
+        while (date.DayOfWeek != DayOfWeek.Wednesday)
+            date = date.AddDays(1);
+        return date;
     }
 }

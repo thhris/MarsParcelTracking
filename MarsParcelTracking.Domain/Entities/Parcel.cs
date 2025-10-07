@@ -1,8 +1,9 @@
-﻿using MarsParcelTracking.Domain.Enums;
+﻿using MarsParcelTracking.Domain.Common;
+using MarsParcelTracking.Domain.Enums;
 
 namespace MarsParcelTracking.Domain.Entities;
 
-public class Parcel
+public class Parcel : BaseEntity
 {
     public required string Barcode { get; set; }
     public ParcelStatus Status { get; set; }
